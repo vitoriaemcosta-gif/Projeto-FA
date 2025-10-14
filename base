@@ -1,0 +1,56 @@
+
+# def menu 
+# - 1 p/ Buscar alimetos
+# - 2 p/ Cadastrar pedido
+# - 3 p/ avaliar pedido
+
+
+# def usuario
+
+# Usuário (1 - ENTRAR) : email e senha
+
+# Usuário	(2 - CADASTRAR) : nome, telefone, email e senha
+
+# def buscar_alimentos
+
+# Alimentos (INFORMÇÕES) :
+# - Nome do alimento
+# - Descrição do alimento
+# - Qts. pessoas serve
+# - Preço 
+
+# Alimentos (SALGADOS) (1)
+# - Pizza (1)
+# - Marmitex (2)
+# - Hamburguer (4)
+# - Sushi (3)
+
+# Alimentos (DOCES) (2)
+# - Bolo de pote (1)
+# - Copo da felicidade (2)
+# - Brownie (3)
+
+# def cad_pedido
+
+# Cadastrar pedido :
+# - Adicionar alimentos 
+# - Quantidade 
+# - Endereço de entrega
+# - (PRINT) 1 p/ "Confirmar pedido?" 2 p/ "editar" 3 p/ "cancelar"
+# 	* EDITAR (1 p/ adicionar, 2 p/ remover)
+
+
+# def pedido_concluido
+
+# Pedido feito :
+# - Data / hora
+# - Itens
+# - Usuário
+# - Código de entrega
+# - Valor
+
+# def avaliacao
+
+# Avaliar Pedido :
+# - 
+# - Atribuir de 0 a 5 estrelas
