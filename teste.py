@@ -1,9 +1,26 @@
 # Lista global para armazenar as credenciais (email e senha).
-# Mover esta lista para fora das funções é o principal ponto de correção.
 cad_dados = []
 login_dados = []
 
-# --- FUNÇÕES AUXILIARES DE PEDIDOS (Moveram-se para o topo) ---
+cardapio_precos = {
+    # Pizzas
+    "queijo": 60.00,
+    "calabresa": 65.00,
+    "quatro queijos": 68.00,
+    "frango com catupiry": 70.00,
+
+    # Hamburgueres
+    "tradicional": 22.00,
+    "bacon": 27.00,
+    "duplo": 35.00,
+
+    # Marmitas
+    "frango": 27.00,
+    "tilapia": 27.00,
+    "carne bovina": 32.00
+}
+
+# Funções de pedido
 
 def exibir_pedidos(pedidos_list):
     # Exibe a lista de pedidos
@@ -18,7 +35,7 @@ def exibir_pedidos(pedidos_list):
 
 
 def cad_pedidos_adicionar():
-    # Função de adição de itens.
+    # Função de adição de itens
     pedidos_adicionais = []
     while True:
         pedido_nome = input("Digite o nome do alimento que deseja adicionar (ou 'SAIR'): ").strip()
@@ -131,11 +148,27 @@ def editar_pedido(pedidos):
             exibir_pedidos(pedidos)
 
             return pedidos
+        
+def calcular_valor_total(pedidos_list):
+    # Calcula o valor total do pedido
+    total = 0.0
 
-# --- FUNÇÕES DE NAVEGAÇÃO E PRINCIPAIS (Moveram-se para o topo) ---
+    for item_pedido in pedidos_list:
+        # Pega o nome do item e padroniza para procurar no CARDAPIO_PRECOS
+        nome_item = item_pedido['item'].lower().strip()
+        quantidade = item_pedido['quantidade']
+        
+        # Tenta encontrar o preço. Se não encontrar, assume o valor 0.00 
+        preco_unitario = cardapio_precos.get(nome_item, 0.00)
+        
+        total += preco_unitario * quantidade
+        
+    return total
+
+# Funções principais 
 
 def alimentos():
-    # PIZZAS
+    # Pizzas
     queijo = {'Descrição: ' : 'Clássica pizza de massa fina, coberta com molho de tomate e generosa camada de mussarela;',
               'Porção: ' : 'Tamanho Grande (8-10 fatias): 3 a 4 pessoas;',
               'Valor: ' : 'R$60,00'}
@@ -149,7 +182,7 @@ def alimentos():
                        'Porção: ' : 'Tamanho Grande (8-10 fatias): 3 a 4 pessoas.',
                        'Valor: ' : 'R$70,00'}
 
-    # HAMBÚRGUERES
+    # Hamburgueres
     tradicional = {'Descrição: ' : 'Sanduíche com pão, hambúrguer de carne bovina, queijo, alface e tomate;',
                    'Porção: ' : '1 pessoa;',
                    'Valor: ' : 'R$22,00'}
@@ -160,7 +193,7 @@ def alimentos():
              'Porção: ' : '1 pessoa;',
              'Valor: ' : 'R$35,00'}
 
-    # MARMITAS
+    # Marmitas
     frango_marmita = {'Descrição: ' : 'Marmita com filé de peito de frango grelhado, acompanhado de arroz, feijão e batata frita;',
                       'Porção: ' : '1 pessoa;',
                       'Valor: ' : 'R$27,00'}
@@ -172,19 +205,17 @@ def alimentos():
                     'Valor: ' : 'R$32,00'}
 
 
-    # FLUXO PRINCIPAL COM LOOP WHILE
-
     while True:
-        # 1. Menu Inicial de Alimentos
-        print("\n" + "="*40)
+        # Menu Inicial de Alimentos
+        print("\n" + "="*20)
         print("||{:^36}||".format("CARDÁPIO DE ALIMENTOS FEIFOOD"))
-        print("="*40)
+        print("="*20)
         print("Opções de Alimentos Disponíveis:")
-        print("="*40)
+        print("="*20)
         print(" 1 - Pizza")
-        print("="*40)
+        print("="*20)
         print(" 2 - Hamburguer")
-        print("="*40)
+        print("="*20)
         print(" 3-  Marmita")
 
         print()
@@ -192,7 +223,7 @@ def alimentos():
         escolha = input("Digite qual alimento deseja visualizar (1, 2 ou 3)\n(ou 'sair' para voltar ao menu): ").lower().strip()
         print()
 
-        if escolha == "sair" or escolha == "4": # Adicionado "4" como atalho para sair do cardápio e voltar ao menu
+        if escolha == "sair" or escolha == "4":
             print("Saindo do cardápio de alimentos...")
             return # Sai da função, encerrando o cardápio
 
@@ -338,14 +369,15 @@ def cad_pedidos():
     # Endereço de entrega
     print("\n--- ENDEREÇO DE ENTREGA ---")
     endereco = input("Por favor, digite o endereço para entrega: ").strip()
+    print()
 
     # 3. Confirmar, Editar ou Cancelar
     while True:
-        print("\n------------------------------------------")
+        print("=="*20)
         print("Resumo do Pedido:")
         exibir_pedidos(pedidos)
         print(f"Endereço de Entrega: {endereco}")
-        print("------------------------------------------")
+        print("=="*20)
 
         print("Opções Finais:")
         print("1. Confirmar pedido")
@@ -379,12 +411,12 @@ def cad_pedidos():
 
 
 def avaliar():
-    """
-    Solicita e processa a avaliação do último pedido do usuário (de 1 a 5 estrelas).
-    """
-    print("------------------------------------------")
+
+    # Solicita e processa a avaliação do último pedido do usuário (de 1 a 5 estrelas).
+
+    print("=="*20)
     print(" Avalie seu último pedido!")
-    print("------------------------------------------")
+    print("=="*20)
 
     # Loop para garantir que a entrada seja válida
     while True:
@@ -422,7 +454,7 @@ def avaliar():
         print("Sua nota 1 é um alerta para nós. Entraremos em contato para entender o ocorrido e compensar a má experiência.")
 
     print(f"Nota Registrada: {avaliacao} estrelas.")
-    print("------------------------------------------")
+    print("=="*20)
     print()
 
 

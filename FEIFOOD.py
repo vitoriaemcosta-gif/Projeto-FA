@@ -3,6 +3,24 @@
 cad_dados = []
 login_dados = []
 
+cardapio_precos = {
+    # Pizzas
+    "queijo": 60.00,
+    "calabresa": 65.00,
+    "quatro queijos": 68.00,
+    "frango com catupiry": 70.00,
+
+    # Hamburgueres
+    "tradicional": 22.00,
+    "bacon": 27.00,
+    "duplo": 35.00,
+
+    # Marmitas
+    "frango": 27.00,
+    "tilapia": 27.00,
+    "carne bovina": 32.00
+}
+
 
 def verificar(entrar) :
     if entrar == 1:
