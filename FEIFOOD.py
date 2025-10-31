@@ -349,10 +349,26 @@ def cad_pedidos():
         opcao_final = input("Digite a opção desejada (1, 2 ou 3): ").strip()
 
         if opcao_final == '1':
+            # Calcula o preço total e lista de itens não encontrados
+            preco_total, itens_nao_encontrados = calcular_preco_total(pedidos)
+            
             print("\nPEDIDO CONFIRMADO!")
-            print(f"Seu pedido será entregue em: {endereco}")
+            
+
+            print(f"VALOR TOTAL: R${preco_total:.2f}") 
+            print()
+
+            if itens_nao_encontrados:
+                # Exibe alerta para itens sem preço no cardápio
+                print("Informamos que os seguintes itens não foram contabilizados, pois não foram encontrados no nosso cardápio de preços:")
+                
+                for item in itens_nao_encontrados:
+                    print(f"- {item}")
+
+
+            print(f"\nSeu pedido será entregue em: {endereco}")
             # Retorna os dados para que possam ser usados/salvos no sistema
-            return {"pedidos": pedidos, "endereco": endereco}
+            return {"pedidos": pedidos, "endereco": endereco, "total": preco_total}
 
         elif opcao_final == '2':
             # Chama a função de edição
@@ -368,6 +384,31 @@ def cad_pedidos():
 
         else:
             print("Opção inválida. Por favor, digite 1, 2 ou 3.")
+
+def calcular_preco_total(pedidos):
+    # Usamos o dicionário global de preços
+    global cardapio_precos 
+    
+    total = 0.0
+    
+    # Lista para itens com preço não encontrado (fora do cardápio)
+    itens_nao_encontrados = []
+    
+    for item_pedido in pedidos:
+        # Pega o nome do item e converte para minúsculas
+        nome_item = item_pedido['item'].lower() 
+        quantidade = item_pedido['quantidade']
+        
+        # Verifica se o item está no cardápio de preços
+        if nome_item in cardapio_precos:
+            preco_unitario = cardapio_precos[nome_item]
+            subtotal = preco_unitario * quantidade
+            total += subtotal
+        else:
+            # Adiciona o item à lista de não encontrados, pois o preço não está no cardapio_precos
+            itens_nao_encontrados.append(item_pedido['item'])
+
+    return total, itens_nao_encontrados
 
 
 # Edição ou exibir
@@ -500,9 +541,9 @@ def remover_item(pedidos):
     
 
 def avaliar():
-    """
-    Solicita e processa a avaliação do último pedido do usuário (de 1 a 5 estrelas).
-    """
+   
+    # Solicita e processa a avaliação do último pedido do usuário (de 1 a 5 estrelas).
+  
     print("------------------------------------------")
     print(" Avalie seu último pedido!")
     print("------------------------------------------")

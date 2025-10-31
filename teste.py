@@ -4,20 +4,32 @@ login_dados = []
 
 cardapio_precos = {
     # Pizzas
-    "queijo": 60.00,
-    "calabresa": 65.00,
-    "quatro queijos": 68.00,
-    "frango com catupiry": 70.00,
+    "pizza de queijo": 60.00,
+    "pizza de calabresa": 65.00,
+    "pizza de quatro queijos": 68.00,
+    "pizza de frango com catupiry": 70.00,
 
     # Hamburgueres
-    "tradicional": 22.00,
-    "bacon": 27.00,
-    "duplo": 35.00,
+    "hamburguer tradicional": 22.00,
+    "hamburguer bacon": 27.00,
+    "hamburguer duplo": 35.00,
 
     # Marmitas
-    "frango": 27.00,
-    "tilapia": 27.00,
-    "carne bovina": 32.00
+    "marmita de frango": 27.00,
+    "marmita de tilapia": 27.00,
+    "marmita de carne bovina": 32.00,
+
+    # Doces
+    "brigadeiro": 5.00,
+    "pudim": 15.00,
+    "bolo de pote": 18.00,
+    "fatia de torta": 20.00,
+
+    # Bebidas
+    "refrigerante de lata": 7.00,
+    "suco natural": 10.00,
+    "água mineral": 4.00,
+
 }
 
 # Funções de pedido
@@ -149,21 +161,30 @@ def editar_pedido(pedidos):
 
             return pedidos
         
-def calcular_valor_total(pedidos_list):
-    # Calcula o valor total do pedido
-    total = 0.0
 
+def calcular_preco_total(pedidos_list):
+    # Usamos o dicionário global de preços
+    global cardapio_precos 
+    
+    total = 0.0
+    
+    # Lista para itens com preço não encontrado (fora do cardápio)
+    itens_nao_encontrados = []
+    
     for item_pedido in pedidos_list:
-        # Pega o nome do item e padroniza para procurar no CARDAPIO_PRECOS
-        nome_item = item_pedido['item'].lower().strip()
+        nome_item = item_pedido['item'].lower() 
         quantidade = item_pedido['quantidade']
         
-        # Tenta encontrar o preço. Se não encontrar, assume o valor 0.00 
-        preco_unitario = cardapio_precos.get(nome_item, 0.00)
-        
-        total += preco_unitario * quantidade
-        
-    return total
+        # Verifica se o item está no cardápio de preços
+        if nome_item in cardapio_precos:
+            preco_unitario = cardapio_precos[nome_item]
+            subtotal = preco_unitario * quantidade
+            total += subtotal
+        else:
+            # Adiciona o item à lista de não encontrados, pois o preço não está no cardapio_precos
+            itens_nao_encontrados.append(item_pedido['item'])
+
+    return total, itens_nao_encontrados
 
 # Funções principais 
 
@@ -203,27 +224,55 @@ def alimentos():
     carne_bovina = {'Descrição: ' : 'Marmita com Bife Acebolado, acompanhado de arroz, feijão, farofa e couve refogada.',
                     'Porção: ' : '1 pessoa;',
                     'Valor: ' : 'R$32,00'}
-
+    
+    # Doces
+    brigadeiro = {'Descrição: ' : 'Clássico brigadeiro gourmet, feito com chocolate belga.',
+                  'Porção: ' : 'Unidade (aprox. 30g);',
+                  'Valor: ' : 'R$5,00'}
+    pudim = {'Descrição: ' : 'Pudim de leite condensado com calda de caramelo caseira.',
+             'Porção: ' : 'Fatia individual;',
+             'Valor: ' : 'R$15,00'}
+    bolo_de_pote = {'Descrição: ' : 'Bolo de chocolate com recheio cremoso em camadas.',
+                    'Porção: ' : '250ml;',
+                    'Valor: ' : 'R$18,00'}
+    torta_fatia = {'Descrição: ' : 'Fatia de torta holandesa.',
+                   'Porção: ' : 'Fatia;',
+                   'Valor: ' : 'R$20,00'}
+    
+    # Bebidas
+    refrigerante_lata = {'Descrição: ' : 'Diversas opções de refrigerantes em lata (Coca, Guaraná, Soda).',
+                         'Porção: ' : 'Lata 350ml;',
+                         'Valor: ' : 'R$7,00'}
+    suco_natural = {'Descrição: ' : 'Sabores variados de suco feito na hora (Laranja, Morango, Limão).',
+                    'Porção: ' : 'Copo 500ml;',
+                    'Valor: ' : 'R$10,00'}
+    agua_mineral = {'Descrição: ' : 'Água mineral sem gás.',
+                    'Porção: ' : 'Garrafa 500ml;',
+                    'Valor: ' : 'R$4,00'}
 
     while True:
         # Menu Inicial de Alimentos
-        print("\n" + "="*20)
+        print("\n" + "="*40)
         print("||{:^36}||".format("CARDÁPIO DE ALIMENTOS FEIFOOD"))
-        print("="*20)
-        print("Opções de Alimentos Disponíveis:")
+        print("="*40) 
+        print()
         print("="*20)
         print(" 1 - Pizza")
         print("="*20)
         print(" 2 - Hamburguer")
         print("="*20)
         print(" 3-  Marmita")
+        print("="*20)
+        print(" 4-  Doces")
+        print("="*20)
+        print(" 5-  Bebidas")
 
         print()
 
-        escolha = input("Digite qual alimento deseja visualizar (1, 2 ou 3)\n(ou 'sair' para voltar ao menu): ").lower().strip()
+        escolha = input("Digite qual opção deseja visualizar (1, 2, 3, 4 ou 5)\n(ou 'sair' para voltar ao menu): ").lower().strip()
         print()
 
-        if escolha == "sair" or escolha == "4":
+        if escolha == "sair":
             print("Saindo do cardápio de alimentos...")
             return # Sai da função, encerrando o cardápio
 
@@ -250,7 +299,7 @@ def alimentos():
             print("\n[FRANGO COM CATUPIRY]")
             for chave, valor in frango_catupiry.items():
                 print(f"- {chave} {valor}")
-
+            print()
             print("=="*20)
 
             voltar = input("Deseja voltar ao menu de alimentos? (Sim ou Não): ").strip().lower()
@@ -277,7 +326,7 @@ def alimentos():
             print("\n[DUPLO]")
             for chave, valor in duplo.items():
                 print(f"- {chave} {valor}")
-
+            print()
             print("=="*20)
 
             voltar = input("Deseja voltar ao menu de alimentos? (Sim ou Não): ").strip().lower()
@@ -304,7 +353,36 @@ def alimentos():
             print("\n[CARNE BOVINA]")
             for chave, valor in carne_bovina.items():
                 print(f"- {chave} {valor}")
+            print()
+            print("=="*20)
 
+            voltar = input("Deseja voltar ao menu de alimentos? (Sim ou Não): ").strip().lower()
+            if voltar != 'sim':
+                print("Saindo do cardápio de alimentos...")
+                return # Sai da função, encerrando o cardápio
+            
+        elif escolha in ("4", "doces"):
+            print("=="*20)
+            print("| !! DOCES DISPONÍVEIS !! |")
+            print("=="*20)
+
+            # Exibe os detalhes dos doces
+            print("\n[BRIGADEIRO]")
+            for chave, valor in brigadeiro.items(): 
+                print(f"- {chave} {valor}")
+
+            print("\n[PUDIM]")
+            for chave, valor in pudim.items(): 
+                print(f"- {chave} {valor}")
+
+            print("\n[BOLO DE POTE]")
+            for chave, valor in bolo_de_pote.items(): 
+                print(f"- {chave} {valor}")
+                
+            print("\n[FATIA DE TORTA]")
+            for chave, valor in torta_fatia.items(): 
+                print(f"- {chave} {valor}")
+            print()
             print("=="*20)
 
             voltar = input("Deseja voltar ao menu de alimentos? (Sim ou Não): ").strip().lower()
@@ -312,7 +390,33 @@ def alimentos():
                 print("Saindo do cardápio de alimentos...")
                 return # Sai da função, encerrando o cardápio
 
-        # Opção inválida
+        # Bebidas
+        elif escolha in ("5", "bebidas"):
+            print("=="*20)
+            print("| !! BEBIDAS DISPONÍVEIS !! |")
+            print("=="*20)
+
+            # Exibe os detalhes das bebidas
+            print("\n[REFRIGERANTE DE LATA]")
+            for chave, valor in refrigerante_lata.items(): 
+                print(f"- {chave} {valor}")
+
+            print("\n[SUCO NATURAL]")
+            for chave, valor in suco_natural.items(): 
+                print(f"- {chave} {valor}")
+
+            print("\n[ÁGUA MINERAL]")
+            for chave, valor in agua_mineral.items(): 
+                print(f"- {chave} {valor}")
+            print()
+            print("=="*20)
+
+            voltar = input("Deseja voltar ao menu de alimentos? (Sim ou Não): ").strip().lower()
+            if voltar != 'sim':
+                print("Saindo do cardápio de alimentos...")
+                return # Sai da função do cardapio
+            
+        #opção invalida
         else:
             print("Alimento não encontrado. Tente novamente.")
 
@@ -374,7 +478,8 @@ def cad_pedidos():
     # 3. Confirmar, Editar ou Cancelar
     while True:
         print("=="*20)
-        print("Resumo do Pedido:")
+        print("\nResumo do Pedido:")
+        print()
         exibir_pedidos(pedidos)
         print(f"Endereço de Entrega: {endereco}")
         print("=="*20)
@@ -389,10 +494,27 @@ def cad_pedidos():
         opcao_final = input("Digite a opção desejada (1, 2 ou 3): ").strip()
 
         if opcao_final == '1':
+            # Calcula o preço total e lista de itens não encontrados
+            preco_total, itens_nao_encontrados = calcular_preco_total(pedidos)
+            
             print("\nPEDIDO CONFIRMADO!")
+            print("Resumo Final do Pedido:")
+            exibir_pedidos(pedidos)
+            print()
+            print(f"VALOR TOTAL: R${preco_total:.2f}") 
+            print()
             print(f"Seu pedido será entregue em: {endereco}")
+
+            if itens_nao_encontrados:
+                # Exibe alerta para itens sem preço no cardápio
+                print("Informamos que os seguintes itens não foram contabilizados, pois não foram encontrados no nosso cardápio de preços:")
+                
+                for item in itens_nao_encontrados:
+                    print(f"- {item}")
+
+            
             # Retorna os dados para que possam ser usados/salvos no sistema
-            return {"pedidos": pedidos, "endereco": endereco}
+            return {"pedidos": pedidos, "endereco": endereco, "total": preco_total}
 
         elif opcao_final == '2':
             # Chama a função de edição
@@ -420,20 +542,23 @@ def avaliar():
 
     # Loop para garantir que a entrada seja válida
     while True:
-        try:
-            # Solicita a nota, convertendo a entrada para número inteiro
-            avaliacao = int(input("Por favor, avalie seu pedido de 1 a 5 estrelas: "))
-
-            # Verifica se a nota está dentro do intervalo permitido (1 a 5)
+        # Pede a entrada como string
+        avaliacao_str = input("Por favor, avalie seu pedido de 1 a 5 estrelas: ").strip()
+        
+        # Verifica se a entrada é um número inteiro
+        if avaliacao_str.isdigit():
+            avaliacao = int(avaliacao_str)
+            
+            # Verifica se o número está dentro do intervalo permitido (1 a 5)
             if 1 <= avaliacao <= 5:
                 # Se for válida, sai do loop
                 break
             else:
-                # Se não estiver no intervalo
+                # Se for um número, mas estiver fora do intervalo
                 print("Opção inválida!!! Digite um número inteiro entre 1 e 5.")
-        except ValueError:
-             print("Entrada inválida. Digite um número inteiro.")
-
+        else:
+            # Se não for um número
+            print("Entrada inválida. Por favor, digite um número inteiro.")
 
     # Mensagens de feedback baseadas na nota
     print("\n------------------------------------------")
@@ -453,7 +578,7 @@ def avaliar():
         print(f"⭐")
         print("Sua nota 1 é um alerta para nós. Entraremos em contato para entender o ocorrido e compensar a má experiência.")
 
-    print(f"Nota Registrada: {avaliacao} estrelas.")
+    print("Agradedemos pela sua avaliação !!!")
     print("=="*20)
     print()
 
@@ -504,9 +629,13 @@ def login():
 
     # Se não houver dados cadastrados, impede o login
     if not login_dados:
-        print("Nenhum usuário cadastrado. Por favor, cadastre-se primeiro.")
-        return 0 # Falha
-
+            # RETORNA AQUI PARA EVITAR O BUG
+            print("\nNenhum usuário cadastrado.")
+            print("Por favor, execute o programa novamente e escolha a opção de cadastro (1).")
+            return
+    
+    print("\n--- LOGIN DE USUÁRIO ---")
+    print()
     loginem = input("Digite seu email: ")
     loginsn = input("Digite sua senha: ")
 
@@ -524,12 +653,14 @@ def usuario() :
     global login_dados # Indica que vamos usar a lista global
     global cad_dados # Indica que vamos usar a lista global
 
-    print("Seja Bem vindo(a) ao FEIFOOD !!! ")
+    
 
-    # Substituindo try/except por um loop while para garantir a entrada
     while True:
+
+        print("Seja Bem vindo(a) ao FEIFOOD !!! ")
+        print()
         # Pede a entrada como string
-        user_input = input("• Digite 1 para realizar o seu cadastro ou 2 para realizar login: ")
+        user_input = input("• 1 - Realizar Cadastro \n• 2 - Realizar Login \n\nDigite a opção desejada (1 ou 2): ").strip()
 
         if user_input in ('1', '2'):
             user = int(user_input) # Converte para inteiro apenas se for válido
@@ -540,16 +671,15 @@ def usuario() :
     if user == 1:
         # Bloco de Cadastro
         cadnm = input("Digite seu nome: ")
-        # MELHORIA: Tratar exceção para garantir que o telefone seja numérico.
+
         while True:
-            try:
-                cadtl_str = input("Digite seu telefone: ")
-                cadtl = int(cadtl_str)
+            cadtl_str = input("Digite seu telefone (apenas números): ")
+            if cadtl_str.isdigit():
+                cadtl = cadtl_str
                 break
-            except ValueError:
+            else:
                 print("Entrada inválida. Por favor, digite apenas números para o telefone.")
-
-
+                
         cadem = input("Digite seu email: ")
         cadsn = input("Digite sua senha (com até 5 letras) : ")
 
@@ -560,7 +690,12 @@ def usuario() :
         login_dados.append(cadsn)
 
         print()
-        print("Cadastro realizado com sucesso !!!\nFaça o login para acessar o FEIFOOD. \n")
+        print("=="*20)
+        print("Cadastro realizado com sucesso !!!")
+        print("=="*20)
+        print()
+        print("Faça o login para acessar o FEIFOOD...")
+
 
         # Chama o login após o cadastro
         verificar(login())
