@@ -1,14 +1,7 @@
--- CADASTROS (Nome e Telefone) --
-vitoria
-122121
 
--- LOGINS (Email e Senha) --
-vitoria
-viemc
--- CADASTROS (Nome e Telefone) --
-vitoria
-2455
 
--- LOGINS (Email e Senha) --
+-- CADASTROS (Nome, Telefone, Email e Senha) --
+viign
+656
 vi
-viemc
+vi

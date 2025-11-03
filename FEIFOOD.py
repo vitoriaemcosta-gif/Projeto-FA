@@ -1,30 +1,61 @@
-# Guardando em um arquivo os dados de cadastro e login dos usuários
-def salvar_usuarios(cadastros, logins):
+# Guardando em um arquivo os dados de cadastro
+def salvar_usuarios(cadastros):
     
     arquivo = open("usuarios.txt", "a") 
     
     # Salva os dados de cadastro 
-    arquivo.write("\n-- CADASTROS (Nome e Telefone) --\n")
+    arquivo.write("\n-- CADASTROS (Nome, Telefone, Email e Senha) --\n")
     for dado in cadastros:
         arquivo.write(dado + "\n")
         
+    arquivo.close()
+
+# Guardando em um arquivo os dados do login dos usuários
+def salvar_logins(logins):
+    
+    arquivo = open("login.txt", "a") 
+    
     # Salva os dados de login 
     arquivo.write("\n-- LOGINS (Email e Senha) --\n")
     for dado in logins:
         arquivo.write(dado + "\n")
     
     arquivo.close()
-
-
-# Guardando em um arquivo os dados das avaliações
-def salvar_avaliacao(nota):
+   
+# Guardando os pedidos
+def salvar_pedido(pedidos_list, endereco, total, itens_nao_encontrados):
     
-    arquivo = open("avaliações.txt", "a") 
+    arquivo = open("pedidos.txt", "w") # Abre para escrita ('w')
     
-    # Salva os dados das avaliações
-    arquivo.write("-- NOTAS --\n")
-    linha_registro = f"- NOTA: {nota} estrelas\n"
-    arquivo.write(linha_registro + "\n")   
+    arquivo.write("========================================\n")
+    arquivo.write("     RELATÓRIO DE PEDIDO CONFIRMADO\n")
+    arquivo.write("========================================\n")
+    
+    # Endereço
+    arquivo.write(f"\nEndereço de Entrega: {endereco}\n")
+    arquivo.write("----------------------------------------\n")
+    # Itens do Pedido
+    arquivo.write("Itens pedidos:\n")
+    if len(pedidos_list) == 0:
+        arquivo.write("- Pedido vazio.\n")
+    else:
+        for num, item_pedido in enumerate(pedidos_list, start=1):
+            nome = item_pedido['item']
+            qtd = item_pedido['quantidade']
+            arquivo.write(f"  {num}. {nome} ({qtd} porção/ões)\n")
+    arquivo.write("----------------------------------------\n")
+
+    # Total
+    arquivo.write(f"Valor total: R${total:.2f}\n")
+    arquivo.write("----------------------------------------\n")
+
+    # 3. Itens Não Encontrados
+    if itens_nao_encontrados:
+        arquivo.write("\nITENS NÃO PRECIFADOS (Verificar):\n")
+        for item in itens_nao_encontrados:
+            arquivo.write(f"- {item}\n")
+    
+    arquivo.write("========================================\n")
     
     arquivo.close()
 
@@ -32,6 +63,17 @@ def salvar_avaliacao(nota):
 #Lista global para armazenar as credenciais (email e senha).
 cad_dados = []
 login_dados = []
+
+#Atualiza os dados de login após um cadastro na lista antes de iniciar o programa
+def atualizar_login():
+    
+    arquivo = open("login.txt", "r")
+    arquivo2 = arquivo.readlines()
+    arquivo.close()
+
+    for i in range (0,len(arquivo2),2):
+        login_dados.append(arquivo2[i].strip())
+        login_dados.append(arquivo2[i+1].strip())
 
 #dicionário global com o cardápio e preços
 cardapio_precos = {
@@ -61,7 +103,6 @@ cardapio_precos = {
     "refrigerante de lata": 7.00,
     "suco natural": 10.00,
     "água mineral": 4.00,
-
 }
 
 # Funções auxiliares de pedido
@@ -238,64 +279,111 @@ def alimentos():
 
     # Pizzas
     queijo = {'Descrição: ' : 'Clássica pizza de massa fina, coberta com molho de tomate e generosa camada de mussarela;',
+
               'Porção: ' : 'Tamanho Grande (8-10 fatias): 3 a 4 pessoas;',
+
               'Valor: ' : 'R$60,00'}
+
     calabresa = {'Descrição: ' : 'Pizza tradicional com molho de tomate, mussarela, fatias de linguiça calabresa e cebola;',
+
                  'Porção: ' : 'Tamanho Grande (8-10 fatias): 3 a 4 pessoas.',
+
                  'Valor: ' : 'R$65,00'}
+
     quatro_queijos = {'Descrição: ' : 'Mussarela, provolone, parmesão e requeijão cremoso.',
+
                       'Porção: ' : 'Tamanho Grande (8-10 fatias): 3 a 4 pessoas.',
+
                       'Valor: ' : 'R$68,00'}
+
     frango_catupiry = {'Descrição: ' : 'Peito de frango desfiado, temperado e coberto com catupiry original.',
+
                        'Porção: ' : 'Tamanho Grande (8-10 fatias): 3 a 4 pessoas.',
+
                        'Valor: ' : 'R$70,00'}
 
     # Hamburgueres
     tradicional = {'Descrição: ' : 'Sanduíche com pão, hambúrguer de carne bovina, queijo, alface e tomate;',
+
                    'Porção: ' : '1 pessoa;',
+
                    'Valor: ' : 'R$22,00'}
+
     bacon = {'Descrição: ' : 'Sanduíche com pão, hambúrguer de carne bovina, queijo e fatias de bacon crocante;',
+
              'Porção: ' : '1 pessoa;',
+
              'Valor: ' : 'R$27,00'}
+
     duplo = {'Descrição: ' : 'Pão, dois hambúrgueres de 150g, queijo cheddar e molho especial.',
+
              'Porção: ' : '1 pessoa;',
+
              'Valor: ' : 'R$35,00'}
 
     # Marmitas
     frango_marmita = {'Descrição: ' : 'Marmita com filé de peito de frango grelhado, acompanhado de arroz, feijão e batata frita;',
+
                       'Porção: ' : '1 pessoa;',
+
                       'Valor: ' : 'R$27,00'}
+
     tilapia = {'Descrição: ' : 'Marmita com filé de peixe Tilápia grelhado, assado ou frito, acompanhado de arroz e salada;',
+
                'Porção: ' : '1 pessoa;',
+
                'Valor: ' : 'R$27,00'}
+
     carne_bovina = {'Descrição: ' : 'Marmita com Bife Acebolado, acompanhado de arroz, feijão, farofa e couve refogada.',
+
                     'Porção: ' : '1 pessoa;',
+
                     'Valor: ' : 'R$32,00'}
-    
+
     # Doces
     brigadeiro = {'Descrição: ' : 'Clássico brigadeiro gourmet, feito com chocolate belga.',
+
                   'Porção: ' : 'Unidade (aprox. 30g);',
+
                   'Valor: ' : 'R$5,00'}
+
     pudim = {'Descrição: ' : 'Pudim de leite condensado com calda de caramelo caseira.',
+
              'Porção: ' : 'Fatia individual;',
+
              'Valor: ' : 'R$15,00'}
+
     bolo_de_pote = {'Descrição: ' : 'Bolo de chocolate com recheio cremoso em camadas.',
+
                     'Porção: ' : '250ml;',
+
                     'Valor: ' : 'R$18,00'}
+
     torta_fatia = {'Descrição: ' : 'Fatia de torta holandesa.',
+
                    'Porção: ' : 'Fatia;',
+
                    'Valor: ' : 'R$20,00'}
-    
+
     # Bebidas
     refrigerante_lata = {'Descrição: ' : 'Diversas opções de refrigerantes em lata (Coca, Guaraná, Soda).',
+
                          'Porção: ' : 'Lata 350ml;',
+
                          'Valor: ' : 'R$7,00'}
+
     suco_natural = {'Descrição: ' : 'Sabores variados de suco feito na hora (Laranja, Morango, Limão).',
+
                     'Porção: ' : 'Copo 500ml;',
+
                     'Valor: ' : 'R$10,00'}
+
     agua_mineral = {'Descrição: ' : 'Água mineral sem gás.',
+
                     'Porção: ' : 'Garrafa 500ml;',
+
                     'Valor: ' : 'R$4,00'}
+
 
     while True:
         # Menu do cardápio de alimentos
@@ -553,6 +641,8 @@ def cad_pedidos():
         if opcao_final == '1':
             # Calcula o preço total e lista de itens não encontrados
             preco_total, itens_nao_encontrados = calcular_preco_total(pedidos)
+
+            salvar_pedido(pedidos, endereco, preco_total, itens_nao_encontrados)
             
             print("\nPEDIDO CONFIRMADO!")
             print()
@@ -612,8 +702,6 @@ def avaliar():
             
             # Verifica se o número está dentro do intervalo permitido (1 a 5)
             if 1 <= avaliacao <= 5:
-                salvar_avaliacao(avaliacao)
-
                 break   
 
             else:
@@ -760,14 +848,18 @@ def usuario() :
         # 1. Salva os dados na lista global
         cad_dados.append(cadnm)
         cad_dados.append(cadtl)
+        cad_dados.append(cadem)
+        cad_dados.append(cadsn)
         login_dados.append(cadem)
         login_dados.append(cadsn)
 
-        salvar_usuarios(cad_dados, login_dados)
+        salvar_usuarios(cad_dados)
+        salvar_logins(login_dados)
 
         print()
         print("=="*20)
         print("Cadastro realizado com sucesso !!!")
+        atualizar_login()
         print("=="*20)
         print()
         print("Faça o login para acessar o FEIFOOD...")
@@ -781,4 +873,5 @@ def usuario() :
         verificar(login())
 
 # Chama a função inicial
+atualizar_login()
 usuario()
