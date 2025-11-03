@@ -2,6 +2,7 @@
 cad_dados = []
 login_dados = []
 
+
 cardapio_precos = {
     # Pizzas
     "pizza de queijo": 60.00,
@@ -51,12 +52,14 @@ def cad_pedidos_adicionar():
     pedidos_adicionais = []
     while True:
         pedido_nome = input("Digite o nome do alimento que deseja adicionar (ou 'SAIR'): ").strip()
+        print()
 
         if pedido_nome.lower() == 'sair':
             break
 
         while True:
             quantidade_str = input(f"Digite a quantidade desejada de '{pedido_nome}': ").strip()
+            print()
 
             if quantidade_str.isdigit():
                 quantidade = int(quantidade_str)
@@ -87,11 +90,13 @@ def remover_item(pedidos):
         return []
 
     print("\n--- ITENS PARA REMOÇÃO ---")
+    print()
     exibir_pedidos(pedidos)
 
     while True:
         # Pede o índice do item a ser removido
         indice_str = input(f"Digite o número do item que deseja remover (1 a {len(pedidos)}) ou '0' para cancelar: ").strip()
+        print()
 
         if indice_str == '0':
             print("Remoção cancelada.")
@@ -128,8 +133,10 @@ def editar_pedido(pedidos):
         print("1. Adicionar itens")
         print("2. Remover um item")
         print("3. Voltar ao menu principal do pedido")
+        print()
 
         opcao_edicao = input("Digite sua opção (1, 2 ou 3): ").strip()
+        print()
 
         if opcao_edicao == '1':
             print("\n--- Adicionar Mais Itens ---")
@@ -163,12 +170,12 @@ def editar_pedido(pedidos):
         
 
 def calcular_preco_total(pedidos_list):
-    # Usamos o dicionário global de preços
+    # dicionário global de preços
     global cardapio_precos 
     
     total = 0.0
     
-    # Lista para itens com preço não encontrado (fora do cardápio)
+    # Lista para itens com preço não encontrado
     itens_nao_encontrados = []
     
     for item_pedido in pedidos_list:
@@ -190,6 +197,8 @@ def calcular_preco_total(pedidos_list):
 
 def alimentos():
     # Pizzas
+
+
     queijo = {'Descrição: ' : 'Clássica pizza de massa fina, coberta com molho de tomate e generosa camada de mussarela;',
               'Porção: ' : 'Tamanho Grande (8-10 fatias): 3 a 4 pessoas;',
               'Valor: ' : 'R$60,00'}
@@ -425,6 +434,7 @@ def cad_pedidos():
     pedidos = []
 
     print("\n--- CADASTRO DE PEDIDOS ---")
+    print()
 
     # Loop de adição de itens
     while True:
@@ -438,6 +448,7 @@ def cad_pedidos():
         # Loop de validação de quantidade
         while True:
             quantidade_str = input(f"Digite a quantidade desejada: ").strip()
+            print()
 
             if quantidade_str.isdigit():
                 quantidade = int(quantidade_str)
@@ -460,8 +471,9 @@ def cad_pedidos():
         pedidos.append(novo_pedido)
 
         print(f"Pedido '{pedido_nome}' ({quantidade} porção/ões) adicionado com sucesso!")
-
+        print()
         adc = input("Deseja adicionar outro item? (Sim ou Não): ").strip().lower()
+        print()
         if adc != 'sim':
             break
 
@@ -472,7 +484,7 @@ def cad_pedidos():
 
     # Endereço de entrega
     print("\n--- ENDEREÇO DE ENTREGA ---")
-    endereco = input("Por favor, digite o endereço para entrega: ").strip()
+    endereco = input("\nPor favor, digite o endereço para entrega: ").strip()
     print()
 
     # 3. Confirmar, Editar ou Cancelar
@@ -481,6 +493,7 @@ def cad_pedidos():
         print("\nResumo do Pedido:")
         print()
         exibir_pedidos(pedidos)
+        print()
         print(f"Endereço de Entrega: {endereco}")
         print("=="*20)
 
@@ -488,16 +501,17 @@ def cad_pedidos():
         print("1. Confirmar pedido")
         print("2. Editar pedido")
         print("3. Cancelar pedido")
-
         print()
 
         opcao_final = input("Digite a opção desejada (1, 2 ou 3): ").strip()
+        print()
 
         if opcao_final == '1':
             # Calcula o preço total e lista de itens não encontrados
             preco_total, itens_nao_encontrados = calcular_preco_total(pedidos)
             
             print("\nPEDIDO CONFIRMADO!")
+            print()
             print("Resumo Final do Pedido:")
             exibir_pedidos(pedidos)
             print()
@@ -539,11 +553,13 @@ def avaliar():
     print("=="*20)
     print(" Avalie seu último pedido!")
     print("=="*20)
+    print()
 
     # Loop para garantir que a entrada seja válida
     while True:
         # Pede a entrada como string
         avaliacao_str = input("Por favor, avalie seu pedido de 1 a 5 estrelas: ").strip()
+        print()
         
         # Verifica se a entrada é um número inteiro
         if avaliacao_str.isdigit():
@@ -561,7 +577,7 @@ def avaliar():
             print("Entrada inválida. Por favor, digite um número inteiro.")
 
     # Mensagens de feedback baseadas na nota
-    print("\n------------------------------------------")
+    print("=="*20)
     if avaliacao == 5:
         print(f"⭐⭐⭐⭐⭐")
         print("Uau! Obrigado pelo feedback e volte sempre!")
@@ -629,7 +645,7 @@ def login():
 
     # Se não houver dados cadastrados, impede o login
     if not login_dados:
-            # RETORNA AQUI PARA EVITAR O BUG
+            
             print("\nNenhum usuário cadastrado.")
             print("Por favor, execute o programa novamente e escolha a opção de cadastro (1).")
             return
@@ -650,10 +666,8 @@ def login():
 
 
 def usuario() :
-    global login_dados # Indica que vamos usar a lista global
-    global cad_dados # Indica que vamos usar a lista global
-
-    
+    global login_dados 
+    global cad_dados 
 
     while True:
 
