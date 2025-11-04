@@ -25,7 +25,7 @@ def salvar_logins(logins):
 # Guardando os pedidos
 def salvar_pedido(pedidos_list, endereco, total, itens_nao_encontrados):
     
-    arquivo = open("pedidos.txt", "w") # Abre para escrita ('w')
+    arquivo = open("pedidos.txt", "a") 
     
     arquivo.write("========================================\n")
     arquivo.write("     RELATÓRIO DE PEDIDO CONFIRMADO\n")
@@ -49,7 +49,7 @@ def salvar_pedido(pedidos_list, endereco, total, itens_nao_encontrados):
     arquivo.write(f"Valor total: R${total:.2f}\n")
     arquivo.write("----------------------------------------\n")
 
-    # 3. Itens Não Encontrados
+    # Itens Não Encontrados
     if itens_nao_encontrados:
         arquivo.write("\nITENS NÃO PRECIFADOS (Verificar):\n")
         for item in itens_nao_encontrados:

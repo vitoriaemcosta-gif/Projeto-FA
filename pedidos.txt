@@ -2,7 +2,7 @@
      RELATÓRIO DE PEDIDO CONFIRMADO
 ========================================
 
-Endereço de Entrega: ejfnhien
+Endereço de Entrega: rua 1, 92
 ----------------------------------------
 Itens pedidos:
   1. pizza de queijo (1 porção/ões)
